@@ -1,0 +1,36 @@
+---
+title: "ps4.Rmd"
+author: "Batuhan"
+date: "7 6 2021"
+output: html_document
+---
+
+1.
+
+```{r}
+my_mean <- function(x, na_rm = FALSE) {
+mean(x, na.rm = na_rm)}
+
+```
+
+```{r}
+myfunc <- function(x) {
+(x - mean(x)) / sd(x)
+}
+```
+
+
+2.
+
+```{r}
+remove_outliers <- function(x, sd_factor = 5L, na_rm = TRUE) {
+lower <- mean(x, na.rm = na_rm) - sd_factor * sd(x, na.rm = na_rm)
+upper <- mean(x, na.rm = na_rm) + sd_factor * sd(x, na.rm = na_rm)
+na_handle <- !as.logical(na_rm * is.na(x))
+x[x > lower & x < upper & na_handle]
+}
+set.seed(25)
+test_vector <- sample(c(rnorm(200, 5, 2), c(-9, 23, 43, 102, 6), c(rep(NA, 5))))
+length(remove_outliers(test_vector, sd_factor = 3L))
+```
+
