@@ -1,0 +1,86 @@
+---
+title: "Problem Set 4"
+author: "Andreas Bender, Philipp Kopper, Sven Lorenz"
+date: "03 Mai 2021"
+output: html_document
+---
+
+Application
+1. In this task you should practice documenting your code, particularly functions that you write. There
+are more formal ways to do this, but for now you can simply use comments to explain what a function
+does, what arguments it takes and what they mean. A template of a function documentation is given
+for the function my_mean below.
+
+
+```{r}
+### Mean function
+###
+### This function computes the mean that is defined as the sum of a vector
+### divided by its length.
+### Arguments:
+### x: A numeric vector. The vector for which the mean should be
+### computed.
+### na.rm: A logical of length 1. Should NA's be removed when the mean is
+### computed? If FALSE and NA's are present the resulting mean
+### will be NA. Defaults to FALSE.
+### Returns: A numeric of length one: the computed mean.
+my_mean <- function(x, na_rm = FALSE) {
+mean(x, na.rm = na_rm)
+}
+```
+
+
+Now consider the function myfunc below. Explain what the function does and use the template above to
+create a function documentation for myfunc. The description should include a title, a short summary of the
+functionality and description of the arguments and returned values. Also, give the function a more suitable
+name.
+
+```{r}
+### Centering and Scaling of numeric vectors
+###
+### This function centers and scales the input, which means the output is centered around its mean and rescaled by its standard deviation.
+### Arguments:
+### x: a numeric vector.
+### Returns: a scaled numeric of length one: the computed mean.
+myfunc <- function(x) {
+(x - mean(x)) / sd(x)
+1}
+# better name: scale, but that already exists, see ?scale
+```
+
+
+2. Write a function that detects and removes outliers. The function should remove all elements in the
+(numeric) vector x that are sd_factor times the standard deviation of x smaller or larger than the mean
+of x. Store the function as an object with the name remove_outliers. Make sure that your function
+also works in the presence of missing values (NAs) and add an argument for this purpose. In essence,
+your function should handle missing values like the underlying mean and standard deviation functions.
+(See na.rm argument of mean.) Use meaningful default values for your arguments (if necessary). Test
+your function with the vector test_vector that is constructed by the code below and sd_factor =
+3L. You should receive 203 (non-missing) observations. Document your function comprehensively.
+
+```{r}
+### Remove outliers
+###
+### Checks wether values of a vector are within a constant multiple of the standard deviation around their collective mean. Removes observations outside that range.
+### Arguments:
+### x: A numeric vector. The vector from which outliers should be removed
+### from.
+### sd_factor: An integer. Controls how many standard deviations an observation has
+### to be away from the mean to be considered an outlier. Defaults to 5
+### na.rm: A logical of length 1. Should NA's be removed when the mean is
+### computed? If FALSE and NA's are present the resulting mean
+### will be NA. Defaults to FALSE.
+### Returns: A numeric vector without outliers.
+remove_outliers <- function(x, sd_factor = 5L, na_rm = TRUE) {
+lower <- mean(x, na.rm = na_rm) - sd_factor * sd(x, na.rm = na_rm)
+upper <- mean(x, na.rm = na_rm) + sd_factor * sd(x, na.rm = na_rm)
+na_handle <- !as.logical(na_rm * is.na(x))
+x[x > lower & x < upper & na_handle]
+}
+set.seed(25)
+# rnorm() simulates normally distributed variables
+test_vector <- sample(c(rnorm(200, 5, 2), c(-9, 23, 43, 102, 6), c(rep(NA, 5))))
+length(remove_outliers(test_vector, sd_factor = 3L))
+## [1] 203
+```
+
